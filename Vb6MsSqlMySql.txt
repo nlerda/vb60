@@ -1,0 +1,64 @@
+
+Function Con_Bas_MsSql()
+  
+  AdoMsSqlSer.Open _
+  "Provider=sqloledb;" & _
+  "Network Library=DBMSSOCN;" & _
+  "Data Source=" & "127.0.0.1" & "," & "1433" & ";" & _
+  "Initial Catalog=" & "GalassiDist" & ";" & _
+  "User ID=" & "sa" & ";" & _
+  "Password=" & "" & ";"
+
+End Function
+
+
+Function Con_Bas_MySql()
+
+  AdoMySqlSer.Open "DRIVER={MySQL ODBC 3.51 Driver};" _
+                 & "SERVER=localhost;" _
+                 & "DATABASE=GalassiDist;" _
+                 & "UID=root;PWD=;PORT=3306;OPTION=131072"
+
+End Function
+
+  '-----------------------------------------------------------------------------------
+  ' UsiarioSis
+  '-----------------------------------------------------------------------------------
+  AdoMySqlSer.Execute _
+  "Delete From UsuarioSis Where 1 = 1 "
+
+  Sql_Campo = "Select * "
+  Sql_Tabla = "From UsuarioSis "
+  Sql_Condi = ""
+  Sql_Orden = ""
+  Criterio1x = Sql_Campo & Sql_Tabla & Sql_Condi & Sql_Orden
+
+  AdoRecor01.CursorLocation = adUseClient
+  AdoRecor01.Open Criterio1x, AdoMsSqlSer, adOpenKeyset, adLockBatchOptimistic, 1
+
+  While Not AdoRecor01.EOF()
+
+    Print #1, "Insert Into UsuarioSis (UsuCodigo, UsuDetalle, UsuSubDe01, UsuSubDe02, UsuDirecci, " & _
+            "UsuTelef, UsuEmail, UsuCodPos, UsuLocali, UsuConIva, UsuCuit, UsuIngBru, UsuUltPres) " & _
+            "Values (" & _
+            Replace(AdoRecor01("UsuCodigo"), ",", ".") & ",'" & _
+            Trim(AdoRecor01("UsuDetalle")) & "','" & _
+            Trim(AdoRecor01("UsuSubDe01")) & "','" & _
+            Trim(AdoRecor01("UsuSubDe02")) & "','" & _
+            Trim(AdoRecor01("UsuDirecci")) & "','" & _
+            Trim(AdoRecor01("UsuTelef")) & "','" & _
+            Trim(AdoRecor01("UsuEmail")) & "','" & _
+            Trim(AdoRecor01("UsuCodPos")) & "','" & _
+            Trim(AdoRecor01("UsuLocali")) & "','" & _
+            Trim(AdoRecor01("UsuConIva")) & "','" & _
+            Trim(AdoRecor01("UsuCuit")) & "','" & _
+            Trim(AdoRecor01("UsuIngBru")) & "'," & _
+            Replace(AdoRecor01("UsuUltPres"), ",", ".") & ")" & " ;"
+
+    AdoRecor01.MoveNext
+
+  Wend
+
+  AdoRecor01.Close
+  Set AdoRecor01 = Nothing
+
